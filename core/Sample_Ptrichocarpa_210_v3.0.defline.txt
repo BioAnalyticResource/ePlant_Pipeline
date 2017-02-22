@@ -1,0 +1,7 @@
+Potri.001G000500.1	multi-copper oxidase type 1 family protein; similar to pollen-specific BP10 protein (SP|Q00624|Brassica)(napus ; [ co-ortholog (3of4) of At1g55570, At3g13390, ]
+Potri.001G000600.1	multi-copper oxidase type 1 family protein; similar to pollen-specific BP10 protein (SP|Q00624|Brassica)(napus ; [ co-ortholog (2of4) of At1g55570, At3g13390, ]
+Potri.001G000700.1	similar to PUR alpha-1 protein; similar to PUR alpha-1 GI:5081612 from (Arabidopsis thaliana); similar to PUR alpha-1 protein; similar to PUR alpha-1 GI:5081612 from (Arabidopsis thaliana); [ co-ortholog (1of2) of At2g32080, ]
+Potri.001G000700.2	similar to PUR alpha-1 protein; similar to PUR alpha-1 GI:5081612 from (Arabidopsis thaliana); similar to PUR alpha-1 protein; similar to PUR alpha-1 GI:5081612 from (Arabidopsis thaliana); [ co-ortholog (1of2) of At2g32080, ]
+Potri.001G000900.1	similar to expressed protein in Arabidopsis thaliana; [ ortholog of At3g13410,]
+Potri.001G000900.2	similar to expressed protein in Arabidopsis thaliana; [ ortholog of At3g13410,]
+Potri.001G000900.3	similar to expressed protein in Arabidopsis thaliana; [ ortholog of At3g13410,]

@@ -1,0 +1,7 @@
+##gff-version 3
+##annot-version v3.0
+Chr01	phytozomev10	gene	1660	2502	.	-	.	ID=Potri.001G000100.v3.0;Name=Potri.001G000100
+Chr01	phytozomev10	mRNA	1660	2502	.	-	.	ID=Potri.001G000100.1.v3.0;Name=Potri.001G000100.1;pacid=27043735;longest=1;Parent=Potri.001G000100.v3.0
+Chr01	phytozomev10	exon	1660	2502	.	-	.	ID=Potri.001G000100.1.v3.0.exon.1;Parent=Potri.001G000100.1.v3.0;pacid=27043735
+Chr01	phytozomev10	CDS	1660	2502	.	-	0	ID=Potri.001G000100.1.v3.0.CDS.1;Parent=Potri.001G000100.1.v3.0;pacid=27043735
+Chr01	phytozomev10	gene	2906	6646	.	-	.	ID=Potri.001G000200.v3.0;Name=Potri.001G000200
