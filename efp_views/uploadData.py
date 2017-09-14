@@ -24,7 +24,6 @@ def connect():
 	try:
 		# Connect to database and get a cursor
 		conn = MySQLdb.connect(host='', user='', passwd='', db='')
-		cur = conn.cursor()
 	except MySQLdb.Error:
 		print('Can not connect to database!')
 		sys.exit(1)
@@ -51,7 +50,7 @@ def main():
 
 	# Get the connection
 	conn = connect()
-	cursor = conn.cursor();
+	cursor = conn.cursor()
 
 	for line in expfh:
 		line = line.rstrip()
