@@ -7,7 +7,6 @@ Usage: Change file name, update passwords and run: python3 uploadData.py
 """
 import sys
 import MySQLdb
-import warnings
 import copy
 import statistics
 
@@ -17,9 +16,6 @@ def connect():
 
 	:returns conn: A connections
 	"""
-
-	# Suppress MySQL Warnings
-	warnings.filterwarnings("ignore", category = MySQLdb.Warning)
 
 	try:
 		# Connect to database and get a cursor
@@ -79,12 +75,6 @@ def main():
 			try:
 				sql = "INSERT INTO sample_data(proj_id, sample_id, data_probeset_id, data_signal, data_bot_id) VALUES (%s, %s, %s, %s, %s)"
 				cursor.execute(sql, (str(proj_id), int(sample_id), lineData[0], float(lineData[i]), header[i]))
-				cursor.execute("SHOW WARNINGS")
-				sqlWarnings = cursor.fetchall()
-
-				# If data is bigger than the field length, it gives error 1406. The lines below have not been tested yet.
-				for i in range(len(sqlWarnings)):
-					print("Warning - " +sqlWarnings[i][2])
 			except MySQLdb.Error as e:
 				print("Error inserting data into database. Error: " + str(e.args[0]) + ": " + str(e.args[1]))
 				conn.rollback()
@@ -97,6 +87,8 @@ def main():
 	except:
 		print("Commit to database failed!")
 		conn.rollback()
+		conn.close()
+		expfh.close()
 		return 1
 
 	conn.close()
