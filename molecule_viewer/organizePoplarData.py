@@ -3,7 +3,7 @@
 This script organizes poplar files.
 Author: Asher
 Data: January 2019
-Usage: Python3 organize_poplar_data.py
+Usage: Python3 organizePoplarData.py
 Notes: It also generates a file for databases upload
 """
 import os
