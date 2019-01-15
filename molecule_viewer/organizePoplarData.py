@@ -56,6 +56,13 @@ def get_model(directory):
         print(details_file + ' not found.')
         exit(-1)
 
+    # Check for null values
+    data = data[data.template != '']
+    data = data.dropna(subset=['prob'])
+    data = data.dropna(subset=['evalue'])
+    if len(data.index) == 0:
+        return 'NA', 'NA', 'NA'
+
     data = data.sort_values(by=['evalue', 'prob']).reset_index()
 
     # Get data for template
@@ -119,6 +126,9 @@ def move_files(genes):
 
         # Get the model we are going to use in ePlant
         template, file_name, confidence = get_model(directory)
+
+        if file_name == 'NA':
+            continue
 
         # Move pdb file
         in_file_name = directory + '/' + file_name
