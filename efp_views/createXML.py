@@ -2,6 +2,7 @@
 """
 This program creates an XML file, given an SVG file.
 Use this program if the ID in SVG matches data_bod_id's in database.
+Some manual editing is still required!
 Author: Asher
 Date: September, 2017
 Usage: python3 createXML.py
@@ -13,7 +14,40 @@ import xml.etree.ElementTree as ET
 
 from xml.dom import minidom
 
-def getSamples():
+
+def get_tissues():
+    """
+    This function returns all the tissues per sample
+
+    :return: dictionary of tissues
+    """
+
+    tissues = {}
+
+    try:
+        tissues_fh = open('tissues.txt', 'r')
+    except FileNotFoundError:
+        print('tissues.txt now found!')
+        exit(-1)
+
+    for line in tissues_fh:
+        line = line.rstrip()
+        line = line.strip()
+
+        line_data = line.split("\t")
+
+        if line_data[0] in tissues.keys():
+            tissues[line_data[0]].append(line_data[1])
+        else:
+            tissues[line_data[0]] = []
+            tissues[line_data[0]].append(line_data[1])
+
+    tissues_fh.close()
+
+    return tissues
+
+
+def get_samples():
     """
     Get the names of all the sample.
     Note that this script is only used if data_bod_id == id in svg
@@ -24,24 +58,24 @@ def getSamples():
     ids = []
 
     try:
-        svgFile = open('', 'r')
-    except:
+        svg_file = open('output.svg', 'r')
+    except FileNotFoundError:
         print("Couldn't open file!")
-        raise
-        sys.exit(1)
+        sys.exit(-1)
 
-    for line in svgFile:
+    for line in svg_file:
         # Get ID
         if "<g id=" in line:
-            matchObj = re.match(r'\s*<g id="(\S+)"', line, flags=re.IGNORECASE)
-            if matchObj:
-                ids.append(matchObj.group(1))
+            match_obj = re.match(r'\s*<g id="(\S+)"', line, flags=re.IGNORECASE)
+            if match_obj:
+                ids.append(match_obj.group(1))
                 continue
 
-    svgFile.close()
+    svg_file.close()
     return ids
 
-def getXML(ids):
+
+def get_XML(ids, tissues):
     """
     This function returns the XML root, given a list of IDs
 
@@ -51,36 +85,42 @@ def getXML(ids):
     # Variables
     species = 'Poplar'
     
-    xmlClass = 'View_leaf'
+    xml_class = 'View_leaf'
     db = 'poplar_leaf'
     img = 'poplar_leaf.svg'
     name = 'all'
     
-    groupName = 'leaf'
+    group_name = 'leaf'
     
-    controlSample = 'Med_CTRL'
+    control_sample = 'Med_CTRL'
 
-    colorKey = "#ffffff"
+    color_key = "#ffffff"
 
     # Add root
     root = ET.Element('specimen')
     root.set('name', species)
 
     # Add sub elements
-    view = ET.SubElement(root, 'view', {'class':xmlClass, 'db': db, 'img': img, 'name': name})
-    group = ET.SubElement(view, 'group', {'name': groupName})
-    control = ET.SubElement(group, 'control', {'sample': controlSample})
+    view = ET.SubElement(root, 'view', {'class':xml_class, 'db': db, 'img': img, 'name': name})
+    group = ET.SubElement(view, 'group', {'name': group_name})
+    control = ET.SubElement(group, 'control', {'sample': control_sample})
 
     # Add IDs
     for Id in ids:
-        tissue = ET.SubElement(group, 'tissue', {'colorKey': colorKey, 'id': Id, 'name': Id})
-        ET.SubElement(tissue, 'sample', {'name': Id})
+        tissue = ET.SubElement(group, 'tissue', {'colorKey': color_key, 'id': Id, 'name': Id})
+
+        # Now add samples
+        if Id in tissues.keys():
+            for replicate in tissues[Id]:
+                print(replicate)
+                ET.SubElement(tissue, 'sample', {'name': replicate})
 
     if root is not None:
         return root
     else:
         print("No document root!")
         sys.exit(1)
+
 
 def prettify(elem):
     """
@@ -90,9 +130,10 @@ def prettify(elem):
     :return: xml
     """
 
-    roughString = ET.tostring(elem, 'utf-8')
-    reparsed = minidom.parseString(roughString)
+    rough_string = ET.tostring(elem, 'utf-8')
+    reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="\t")
+
 
 def main():
     """
@@ -101,16 +142,16 @@ def main():
     :return: 0 or 1, 0 for success
     """
 
-    outFile = open('output.xml', 'w')
+    out_file = open('output.xml', 'w')
 
     # List of Sample IDs.
-    ids = getSamples()
-    root = getXML(ids)
+    ids = get_samples()
+    tissues = get_tissues()
+    root = get_XML(ids, tissues)
 
-
-    outFile.write(prettify(root))
-    outFile.write("\n")
-    outFile.close()
+    out_file.write(prettify(root))
+    out_file.write("\n")
+    out_file.close()
 
     return 0
 
