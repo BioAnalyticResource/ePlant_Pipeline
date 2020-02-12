@@ -25,6 +25,7 @@ def get_tissues():
     tissues = {}
 
     try:
+        # NOTE: Samples file name
         tissues_fh = open('tissues.txt', 'r')
     except FileNotFoundError:
         print('tissues.txt now found!')
@@ -54,11 +55,11 @@ def get_samples():
 
     :return: list of ids
     """
-    
+
     ids = []
 
     try:
-        svg_file = open('output.svg', 'r')
+        svg_file = open('sugarcane_culm_optimized.svg', 'r')
     except FileNotFoundError:
         print("Couldn't open file!")
         sys.exit(-1)
@@ -81,19 +82,17 @@ def get_XML(ids, tissues):
 
     :return: XML root
     """
-    
-    # Variables
+
+    # Variables: NOTE: These need to be changed
     species = 'Poplar'
-    
     xml_class = 'View_leaf'
     db = 'poplar_leaf'
     img = 'poplar_leaf.svg'
     name = 'all'
-    
     group_name = 'leaf'
-    
     control_sample = 'Med_CTRL'
 
+    # Other variables
     color_key = "#ffffff"
 
     # Add root
@@ -107,12 +106,11 @@ def get_XML(ids, tissues):
 
     # Add IDs
     for Id in ids:
-        tissue = ET.SubElement(group, 'tissue', {'colorKey': color_key, 'id': Id, 'name': Id})
-
         # Now add samples
         if Id in tissues.keys():
+            tissue = ET.SubElement(group, 'tissue', {'colorKey': color_key, 'id': Id, 'name': Id})
+
             for replicate in tissues[Id]:
-                print(replicate)
                 ET.SubElement(tissue, 'sample', {'name': replicate})
 
     if root is not None:
