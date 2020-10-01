@@ -7,6 +7,7 @@ Usage: python3 extract_DNA.py
 Notes: Update file name before running.
 """
 
+
 def main():
     chr_file = 'Slycopersicum_390_v2.5.fa'
     outfile = ''
@@ -33,6 +34,7 @@ def main():
     chr_fh.close()
     outfh.write('\n')
     outfh.close()
+
 
 if __name__ == '__main__':
     main()

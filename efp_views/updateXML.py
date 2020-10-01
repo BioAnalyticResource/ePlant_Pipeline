@@ -8,6 +8,7 @@ Usage: python3 updateXML.py
 import sys
 import xml.etree.ElementTree as ET
 
+
 def main():
 	"""
 	The main program for rewriting XML file
@@ -16,11 +17,11 @@ def main():
 	"""
 
 	# Using Poplar data as a example
-	oldXML = "Populus_trichocarpa.xml"
-	newXML = "Populus_trichocarpa_new.xml"	# Rename this when copying to ePlant
+	old_xml = "Populus_trichocarpa.xml"
+	new_xml = "Populus_trichocarpa_new.xml"	# Rename this when copying to ePlant
 
 	try:
-		tree = ET.parse(oldXML)
+		tree = ET.parse(old_xml)
 		root = tree.getroot()
 	except:
 		print("Failed to parse the XML file.")
@@ -33,9 +34,10 @@ def main():
 		name = name.replace(' ', '_')
 		tissue.set('id', name)
 		
-	tree.write(newXML)
+	tree.write(new_xml)
 
 	return 0
+
 
 if __name__ == '__main__':
 	main()

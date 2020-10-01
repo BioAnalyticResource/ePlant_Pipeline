@@ -68,15 +68,14 @@ def main():
     """
     # Variables
     # So, this file only has generifs for Arabidopsis
-    descFile = 'arabidopsis_generifs.csv'  # GFF3 file
-
+    desc_file = 'arabidopsis_generifs.csv'  # GFF3 file
 
     # Get lookups
     lookup = ncbi_lookup_dictionary()
 
     # Read GFF3 Data
     try:
-        descfh = open(descFile, 'r')
+        descfh = open(desc_file, 'r')
     except FileNotFoundError:
         print('Gene RIFs file is not found.')
         exit(-1)

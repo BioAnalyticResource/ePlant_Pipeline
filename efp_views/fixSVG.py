@@ -8,6 +8,7 @@ Usage: python3 fixSVG.py
 
 import re
 
+
 def main():
 	"""
 	The main program
@@ -17,48 +18,49 @@ def main():
 
 	# Open files
 	try:
-		inputFile = open('', 'r')
-		outputFile = open('', 'w')
-	except:
+		input_file = open('', 'r')
+		output_file = open('', 'w')
+	except FileNotFoundError:
 		print("Couldn't open files!")
 		raise
 	
-	for line in inputFile:
+	for line in input_file:
 		# Add grous
 		if "<circle id=" in line:
 			# Read id
-			matchObj = re.match(r'\s+<circle id="(\S+)"', line, flags=re.IGNORECASE)
-			if matchObj:
-				groupId = matchObj.group(1)
+			match_obj = re.match(r'\s+<circle id="(\S+)"', line, flags=re.IGNORECASE)
+			if match_obj:
+				group_id = match_obj.group(1)
 			else:
 				print("No id in circle. Adding as is.")
-				outputFile.write(line)
+				output_file.write(line)
 				continue
 			
 			# Add group
-			outputFile.write('<g id="' + groupId + '">' + "\n")
-			outputFile.write(line)
-			outputFile.write('</g>' + "\n")
+			output_file.write('<g id="' + group_id + '">' + "\n")
+			output_file.write(line)
+			output_file.write('</g>' + "\n")
 		elif "<ellipse id=" in line:
 			# Now for eclipses
 			# Read id
-			matchObj = re.match(r'\s+<ellipse id="(\S+)"', line, flags=re.IGNORECASE)
-			if matchObj:
-				groupId = matchObj.group(1)
+			match_obj = re.match(r'\s+<ellipse id="(\S+)"', line, flags=re.IGNORECASE)
+			if match_obj:
+				group_id = match_obj.group(1)
 			else:
 				print("No id in circle. Adding as is.")
-				outputFile.write(line)
+				output_file.write(line)
 				continue
 			
 			# Add group
-			outputFile.write('<g id="' + groupId + '">' + "\n")
-			outputFile.write(line)
-			outputFile.write('</g>' + "\n")
+			output_file.write('<g id="' + group_id + '">' + "\n")
+			output_file.write(line)
+			output_file.write('</g>' + "\n")
 		else:
-			outputFile.write(line)
+			output_file.write(line)
 
-	inputFile.close()
-	outputFile.close()
+	input_file.close()
+	output_file.close()
+
 
 if __name__ == '__main__':
 	main()

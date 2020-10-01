@@ -33,15 +33,15 @@ def indent(elem, level=0):
             elem.tail = i
 
 
-def add_group(new_svg, id):
+def add_group(new_svg, grp_id):
     """
     This functions adds group tag
     :param new_svg: The new SVG file
-    :param id: The group id
+    :param grp_id: The group id
     :return: The new group
     """
     new_group = ET.SubElement(new_svg, 'g')
-    new_group.attrib['id'] = id
+    new_group.attrib['id'] = grp_id
     return new_group
 
 
@@ -114,7 +114,6 @@ def get_optimized_svg(root):
                 # For all data sets
                 new_group.append(text)
 
-
     return new_svg
 
 
@@ -134,11 +133,11 @@ def main():
         print('Failed to parse the SVG file.')
         return 1
 
-    newSVG = get_optimized_svg(root)
-    indent(newSVG)
+    new_svg = get_optimized_svg(root)
+    indent(new_svg)
 
     ET.register_namespace('', 'http://www.w3.org/2000/svg')
-    new_tree = ET.ElementTree(newSVG)
+    new_tree = ET.ElementTree(new_svg)
     new_tree.write(new_svg_file, encoding='utf-8', xml_declaration=True)
 
     return 0

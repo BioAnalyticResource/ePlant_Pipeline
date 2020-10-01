@@ -31,11 +31,11 @@ def main():
     :return: boolean 0 or 1
     """
     # Variables
-    descFile = 'gene_aliases_20171231.txt'  # GFF3 file
+    desc_file = 'gene_aliases_20171231.txt'  # GFF3 file
 
     # Read GFF3 Data
     try:
-        descfh = open(descFile, 'r')
+        descfh = open(desc_file, 'r')
     except FileNotFoundError:
         print('File is not found')
         exit(-1)

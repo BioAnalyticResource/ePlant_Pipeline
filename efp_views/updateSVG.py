@@ -9,6 +9,7 @@ Usage: python3 updateSVG.py
 
 import re
 
+
 def main():
 	"""
 	The main program
@@ -18,20 +19,20 @@ def main():
 
 	# Open files
 	try:
-		inputFile = open('Populus_trichocarpa.svg', 'r')
-		outputFile = open('Populus_trichocarpa_new.svg', 'w')
-	except:
+		input_file = open('Populus_trichocarpa.svg', 'r')
+		output_file = open('Populus_trichocarpa_new.svg', 'w')
+	except FileNotFoundError:
 		print("Counldn't open files!")
 		raise
 	
-	for line in inputFile:
+	for line in input_file:
 		# Fix group ids
 		if "<g id=" in line:
-			matchObj = re.match(r'\s+<g id="\S+"', line, flags=re.IGNORECASE)
-			if matchObj:
-				outputFile.write(matchObj.group(0) + ">\n")
+			match_obj = re.match(r'\s+<g id="\S+"', line, flags=re.IGNORECASE)
+			if match_obj:
+				output_file.write(match_obj.group(0) + ">\n")
 
-				continue	# So we don't pring the line twice
+				continue # So we don't pring the line twice
 
 		# Delete old path styles
 		if "<path id=" in line:
@@ -40,10 +41,11 @@ def main():
 		# Fix paths
 		if "<path id=" in line:
 			line = re.sub(r'<path id="\S+"', '<path fill="none" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10"', line, flags=re.IGNORECASE)
-		outputFile.write(line)
+		output_file.write(line)
 	
-	inputFile.close()
-	outputFile.close()
+	input_file.close()
+	output_file.close()
+
 
 if __name__ == '__main__':
 	main()

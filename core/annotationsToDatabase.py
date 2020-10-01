@@ -35,12 +35,12 @@ def main():
     """
 
     # Variables
-    annotationsFile = 'Spurpurea_289_v1.0.defline.txt'  # Annotations File
-    commentLineRegEx = re.compile('^#')  # Comments
+    annotations_file = 'Spurpurea_289_v1.0.defline.txt'  # Annotations File
+    comment_line_reg_ex = re.compile('^#')  # Comments
 
     # Read Annotations Data
     try:
-        annotationsfh = open(annotationsFile, 'r')
+        annotations_fh = open(annotations_file, 'r')
     except FileNotFoundError:
         print('An error has occurred: ', sys.exc_info()[0])
         sys.exit(-1)
@@ -49,13 +49,13 @@ def main():
     conn = connect()
     cursor = conn.cursor()
 
-    for line in annotationsfh:
+    for line in annotations_fh:
         line = line.rstrip()
         line = line.rstrip("\n\r")
 
         # GFF3 has comment starting with '#"
-        matchComment = commentLineRegEx.match(line)
-        if matchComment:
+        match_comment = comment_line_reg_ex.match(line)
+        if match_comment:
             # Comment is found. move the next line
             continue
 
@@ -70,20 +70,20 @@ def main():
             print("Error inserting data into database: Error: " + str(e.args[0]) + ": " + e.args[1])
             conn.rollback()
             conn.close()
-            annotationsfh.close()
+            annotations_fh.close()
             sys.exit(-1)
 
     try:
         conn.commit()
     except MySQLdb.Error:
         print("Commit to database failed!")
-        annotationsfh.close()
+        annotations_fh.close()
         conn.rollback()
         conn.close()
         sys.exit(-1)
 
     conn.close()
-    annotationsfh.close()
+    annotations_fh.close()
     return 0
 
 
