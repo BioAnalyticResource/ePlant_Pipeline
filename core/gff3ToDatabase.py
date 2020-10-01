@@ -35,15 +35,15 @@ def main():
     """
 
     # Variables
-    gff3File = 'Spurpurea_289_v1.0.gene_exons.gff3'  # GFF3 file
-    commentLineRegEx = re.compile('^#')  # Comments
-    parentRegEx = re.compile('Parent=(.*?);')  # Parent column
-    idRegEx = re.compile('ID=(.*?);')  # ID column
-    nameRegEx = re.compile('Name=(.*?);')  # Name
+    gff3_file = 'Spurpurea_289_v1.0.gene_exons.gff3'  # GFF3 file
+    comment_line_reg_ex = re.compile('^#')  # Comments
+    parent_reg_ex = re.compile('Parent=(.*?);')  # Parent column
+    id_reg_ex = re.compile('ID=(.*?);')  # ID column
+    name_reg_ex = re.compile('Name=(.*?);')  # Name
 
     # Read GFF3 Data
     try:
-        gff3fh = open(gff3File, 'r')
+        gff3fh = open(gff3_file, 'r')
     except FileNotFoundError:
         print('An error has occurred: ', sys.exc_info()[0])
         sys.exit(-1)
@@ -57,8 +57,8 @@ def main():
         line = line.rstrip("\n\r")
 
         # GFF3 has comment starting with '#"
-        matchComment = commentLineRegEx.match(line)
-        if matchComment:
+        match_comment = comment_line_reg_ex.match(line)
+        if match_comment:
             # Comment is found. move the next line
             continue
 
@@ -70,28 +70,28 @@ def main():
             continue
 
         # Get ID
-        matchId = idRegEx.search(columns[8])
-        if matchId:
-            geneId = matchId.group(1)
+        match_id = id_reg_ex.search(columns[8])
+        if match_id:
+            gene_id = match_id.group(1)
         else:
-            geneId = ""
+            gene_id = ""
             print("Warning: No ID!")
 
         # Get Parent
-        matchParent = parentRegEx.search(columns[8])
-        if matchParent:
-            parent = matchParent.group(1)
+        match_parent = parent_reg_ex.search(columns[8])
+        if match_parent:
+            parent = match_parent.group(1)
         else:
-            if geneId != "":
-                parent = geneId
+            if gene_id != "":
+                parent = gene_id
             else:
                 print("Warning: No parrent!")
 
         # Get name
-        geneName = None
-        matchName = nameRegEx.search(columns[8])
-        if matchName:
-            geneName = matchName.group(1)
+        gene_name = None
+        match_name = name_reg_ex.search(columns[8])
+        if match_name:
+            gene_name = match_name.group(1)
 
         # Replace '.' by NULL
         if columns[5] == ".":
@@ -100,20 +100,20 @@ def main():
         if columns[7] == ".":
             columns[7] = None
 
-        if geneName is not None:
-            geneName = re.sub(r'.v1.0', '', geneName)
+        if gene_name is not None:
+            gene_name = re.sub(r'.v1.0', '', gene_name)
 
-        if geneId is not None:
-            geneId = re.sub(r'.v1.0', '', geneId)
+        if gene_id is not None:
+            gene_id = re.sub(r'.v1.0', '', gene_id)
 
         if parent is not None:
             parent = re.sub(r'.v1.0', '', parent)
 
         # Now insert into database
-        sql = "INSERT INTO gff3 (SeqID, Source, Type, Start, End, Score, Strand, Phase, Id, geneId, Parent) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        sql = "INSERT INTO gff3 (SeqID, Source, Type, Start, End, Score, Strand, Phase, Id, gene_id, Parent) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         try:
             cursor.execute(sql, (
-                columns[0], columns[1], columns[2], columns[3], columns[4], columns[5], columns[6], columns[7], geneName, geneId, parent)
+                columns[0], columns[1], columns[2], columns[3], columns[4], columns[5], columns[6], columns[7], gene_name, gene_id, parent)
             )
         except MySQLdb.Error as e:
             print("Error inserting data into database: Error: " + str(e.args[0]) + ": " + e.args[1])

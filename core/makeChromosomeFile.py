@@ -9,6 +9,7 @@ Notes: This program uses BioPython for Python 3
 from Bio import SeqIO
 import json
 
+
 def main():
 	"""
 	The main program that create a json file for ePlant
@@ -17,8 +18,8 @@ def main():
 	"""
 
 	fasta_sequences = SeqIO.parse(open("Ptrichocarpa_210_v3.0.fa"), 'fasta')
-	chrData = {'species': 'Populus trichocarpa'}
-	chrInfo = []
+	chr_data = {'species': 'Populus trichocarpa'}
+	chr_info = []
 
 	# Get the sequence lengths
 	for fasta in fasta_sequences:
@@ -28,17 +29,18 @@ def main():
 		if "scaffold" in name:
 			pass
 		else:
-			chrInfo.append({'id': name, 'name': name, 'size': str(length), 'centromeres': []})
+			chr_info.append({'id': name, 'name': name, 'size': str(length), 'centromeres': []})
 
-	chrData['chromosomes'] = chrInfo
+	chr_data['chromosomes'] = chr_info
 
 	# Save the data into output file: Populus_trichocarpa.json
 	try:
 		fh = open('Populus_trichocarpa.json', 'w')
-		json.dump(chrData, fh, indent=4)
+		json.dump(chr_data, fh, indent=4)
 		fh.close()
-	except:
+	except FileNotFoundError:
 		print("An error has occurred with trying to save the file.")
+
 
 if __name__ == '__main__':
 	main()

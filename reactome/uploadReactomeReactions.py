@@ -9,6 +9,7 @@ Usage: python3 uploadReactome.py
 import sys
 import MySQLdb
 
+
 def connect():
 	"""
 	Connect to the database
@@ -25,6 +26,7 @@ def connect():
 	
 	return conn
 
+
 def main():
 	"""
 	The main program for uploading the data
@@ -33,44 +35,43 @@ def main():
 	"""
 
 	# Variables
-	reactomeFile = 'Ensembl2PlantReactomeReactions.txt'
-	speaciesName = 'Arabidopsis thaliana'
+	reactome_file = 'Ensembl2PlantReactomeReactions.txt'
+	speacies_name = 'Arabidopsis thaliana'
 
 	# Read the Reactome data
 	try:
-		reactfh = open(reactomeFile, 'r')
-	except:
-		print('An error has occured: ', sys.exec_info()[0])
+		reactfh = open(reactome_file, 'r')
+	except FileNotFoundError:
+		print('An error has occurred: ', sys.exec_info()[0])
 		raise
-		return 1
 
 	# Get the connection
 	conn = connect()
 	cursor = conn.cursor()
 
 	for line in reactfh:
-		line = line.rstrip();
+		line = line.rstrip()
 		line = line.rstrip("\n\r")
 
-		lineData = line.split("\t")
+		line_data = line.split("\t")
 
-		if lineData[5] != speaciesName:
+		if line_data[5] != speacies_name:
 			continue
 		
-		if lineData[0] == "" or lineData[1] == "":
+		if line_data[0] == "" or line_data[1] == "":
 			continue
 
 		try:
 			sql = "INSERT INTO reactome_reactions(gene_id, reaction_id) VALUES (%s, %s)"
-			cursor.execute(sql, (lineData[0], lineData[1]))
-		except:
+			cursor.execute(sql, (line_data[0], line_data[1]))
+		except MySQLdb.Error as e:
 			print("Error inserting data into database. Error: " + str(e.args[0]) + ": " + str(e.args[1]))
 			conn.rollback()
 			return 1
 
 	try:
 		conn.commit()
-	except:
+	except MySQLdb.Error:
 		print("Commit to database failed!")
 		conn.rollback()
 		return 1
@@ -78,6 +79,7 @@ def main():
 	conn.close()
 	reactfh.close()
 	return 0
+
 
 if __name__ == '__main__':
 	main()

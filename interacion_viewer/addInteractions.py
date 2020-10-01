@@ -14,6 +14,7 @@ import re
 # Note: Pandas xlrd is much slower.
 from openpyxl import load_workbook
 
+
 def connect():
 	"""
 	Connect to the database
@@ -28,6 +29,7 @@ def connect():
 		sys.exit(1)
 	
 	return conn
+
 
 def formatPubmedID(pubmed):
 	"""
@@ -67,6 +69,7 @@ def formatPubmedID(pubmed):
 
 	return None
 
+
 def getList(wb):
 	"""
 	Get the list of all interactions in wb
@@ -75,8 +78,6 @@ def getList(wb):
 	"""
 
 	interactome = {}
-	values = []
-	pubmed = ""
 	p = re.compile(r'_.*$')
 
 	ws = wb['Master Interactome']
@@ -86,7 +87,6 @@ def getList(wb):
 		if "Maize A" in row[0].value:
 			continue
 
-		pubmed = ""
 		pubmed = formatPubmedID(row[20].value)	
 
 		# check if Key is already there
@@ -106,6 +106,7 @@ def getList(wb):
 			interactome[row[2].value] = [p.sub('', row[0].value), p.sub('', row[1].value), None, None, pubmed]
 	
 	return interactome	
+
 
 def getCV(wb, interactome):
 	"""
@@ -128,6 +129,7 @@ def getCV(wb, interactome):
 
 	return interactome
 
+
 def main():
 	"""
 	The main program.
@@ -136,11 +138,11 @@ def main():
 	"""
 	
 	# Variables
-	interactionsFile = ''
+	interactions_file = ''
 
 	# Note that read_only is required the speed up the load.
 	warnings.simplefilter('ignore')
-	wb = load_workbook(filename = interactionsFile, read_only=True)
+	wb = load_workbook(filename = interactions_file, read_only=True)
 	warnings.simplefilter('default')
 
 	interactome = getList(wb)
@@ -153,7 +155,7 @@ def main():
 	for k, v in interactome.items():
 		try:
 			cursor.execute(sql, (v[0], v[1], v[2], 0, v[3], v[4]))
-			if (v[0] != v[1]):
+			if v[0] != v[1]:
 				cursor.execute(sql, (v[1], v[0], v[2], 1, v[3], v[4]))
 		except MySQLdb.Error as e:
 			if e.args[0] == 1062:
@@ -164,13 +166,14 @@ def main():
 
 	try:
 		conn.commit()
-	except:
+	except MySQLdb.Error:
 		print("Commit to database failed!")
 		conn.rollback()
 		return 1
 
 	conn.close()
 	return 0
+
 
 if __name__ == '__main__':
 	main()

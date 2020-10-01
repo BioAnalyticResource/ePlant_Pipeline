@@ -30,11 +30,11 @@ def main():
     :return: boolean 0 or 1
     """
     # Variables
-    descFile = 'Araport11_functional_descriptions_20171231.txt'  # GFF3 file
+    desc_file = 'Araport11_functional_descriptions_20171231.txt'  # GFF3 file
 
     # Read GFF3 Data
     try:
-        descfh = open(descFile, 'r')
+        descfh = open(desc_file, 'r')
     except FileNotFoundError:
         print('File not found.!')
         exit(-1)

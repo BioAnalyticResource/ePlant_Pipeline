@@ -9,6 +9,7 @@ Usage: Python3 uploadLookup.py
 import sys
 import MySQLdb
 
+
 def connect():
 	"""
 	Connect to the database
@@ -22,9 +23,9 @@ def connect():
 	except MySQLdb.Error:
 		print('Can not connect to database!')
 		raise
-		sys.exit(1)
 
 	return conn
+
 
 def main():
 	"""
@@ -34,15 +35,14 @@ def main():
 	"""
 
 	# Variables
-	lookupFile = ''
+	lookup_file = ''
 
 	# Read the expression data file
 	try:
-		lookupfh = open(lookupFile, 'r')
-	except:
-		print('An error has occured: ', sys.exc_info()[0])
+		lookupfh = open(lookup_file, 'r')
+	except FileNotFoundError:
+		print('An error has occurred: ', sys.exc_info()[0])
 		raise
-		sys.exit(1)
 
 	# Get the connection
 	conn = connect()
@@ -52,37 +52,36 @@ def main():
 		line = line.rstrip()
 		line = line.rstrip("\n\n")
 
-		lineData = line.split(" ")
+		line_data = line.split(" ")
 
 		# Skip comments
-		if lineData[0][0] == "#":
+		if line_data[0][0] == "#":
 			continue
 
 		# Skip the header, we don't need it
-		if lineData[0][0] == "Probe_set":
+		if line_data[0][0] == "Probe_set":
 			continue
 
 		# Skip the ones with no ID
-		if len(lineData) <= 1:
+		if len(line_data) <= 1:
 			continue
 
 		# Skip no probeset
-		if lineData[1] == "":
+		if line_data[1] == "":
 			continue
 
 		# Skip na
-		if lineData[1] == "na":
+		if line_data[1] == "na":
 			continue
 
 		# Now upload to database
 		try:
 			sql = "INSERT INTO maize_lookup_v4(probeset, gene_id) VALUES (%s, %s)"
-			cursor.execute(sql, (lineData[0], lineData[1]))
+			cursor.execute(sql, (line_data[0], line_data[1]))
 		except:
 			print("Failed to inserted data into MySQL!")
-			raise
 			conn.rollback()
-			sys.exit(1)
+			raise
 
 	try:
 		conn.commit()
@@ -96,6 +95,7 @@ def main():
 
 	print("Uploaded lookup. Don't forget to index databases!")
 	return 0
+
 
 if __name__ == '__main__':
 	main()
