@@ -1,6 +1,6 @@
 #!/usr/bin/python3
-# This program formats data provided in columns into a table for upload
-# Copy list of sample in the header.txt before running
+# This program formats data provided in columns into a table
+# Copy list of sample in the header.txt
 # Author: Asher
 # Date: February 24, 2020
 # Usage: python3 organize_data.py
@@ -16,17 +16,17 @@ def sample_list_header(sample_list):
     line_data = []
 
     try:
-        listfh = open(sample_list, 'r')
+        list_fh = open(sample_list, 'r')
     except FileNotFoundError:
         print('File is not found')
         exit(-1)
 
-    for line in listfh:
+    for line in list_fh:
         line = line.rstrip()
         line = line.rstrip("\n\r")
         line_data.append(line)
 
-    listfh.close()
+    list_fh.close()
 
     return line_data
 
@@ -45,20 +45,24 @@ def main():
     sample_num = 0
 
     # Get the list of samples
-    data_set['ID'] = sample_list_header(sample_list)
+    sample_header = sample_list_header(sample_list)
+    data_set['ID'] = sample_header
 
     # Now read the big table
     try:
-        datafh = open(expression_file, 'r')
+        data_fh = open(expression_file, 'r')
     except FileNotFoundError:
         print('File not found!')
         exit(-1)
 
-    for line in datafh:
+    for line in data_fh:
         line = line.rstrip()
         line = line.rstrip("\n\r")
 
         line_data = line.split("\t")
+
+        for i in range(len(line_data)):
+            line_data[i] = line_data[i].strip()
 
         # Skip header
         if line_data[0] == 'Tissue':
@@ -68,29 +72,32 @@ def main():
             pass
         else:
             # Fist gene ID
-            data_set[line_data[1]] = []
+            data_set[line_data[1]] = ["NAN"] * len(sample_header)
 
         current_sample = line_data[0]
-        current_sample = 0
-        # Sample check
-        if current_sample == line_data[0] and sample_list[sample_num] == current_sample:
-            # Everything okay
-            data_set[line_data[1]].append(line_data[2])
-        else:
-            current_sample = line_data[0]
-            sample_num += 1
-            data_set[line_data[1]].append(line_data[2])
+        sample_num = 0
 
-    datafh.close()
+        while sample_header[sample_num] != current_sample:
+            sample_num += 1
+
+        # Sample check
+        if (current_sample == line_data[0]) and (sample_header[sample_num] == current_sample):
+            # Everything okay
+            data_set[line_data[1]][sample_num] = line_data[2]
+        else:
+            print("Something went wrong")
+            exit()
+
+    data_fh.close()
 
     # Output file is the table to be loaded!
-    outfh = open('output.tsv', 'w')
+    out_fh = open('output.tsv', 'w')
     for k, v in data_set.items():
-        outfh.write(k)
+        out_fh.write(k)
         for x in v:
-            outfh.write("\t" + x)
-        outfh.write("\n")
-    outfh.close()
+            out_fh.write("\t" + x)
+        out_fh.write("\n")
+    out_fh.close()
 
 
 if __name__ == '__main__':
