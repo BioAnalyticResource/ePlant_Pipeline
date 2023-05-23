@@ -110,7 +110,7 @@ def main():
             parent = re.sub(r'.v1.0', '', parent)
 
         # Now insert into database
-        sql = "INSERT INTO gff3 (SeqID, Source, Type, Start, End, Score, Strand, Phase, Id, gene_id, Parent) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        sql = "INSERT INTO gff3 (SeqID, Source, Type, Start, End, Score, Strand, Phase, Id, geneId, Parent) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         try:
             cursor.execute(sql, (
                 columns[0], columns[1], columns[2], columns[3], columns[4], columns[5], columns[6], columns[7], gene_name, gene_id, parent)

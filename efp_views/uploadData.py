@@ -58,6 +58,7 @@ def main():
         # Get the header if there is any
         if line_data[0] == 'ID':
             header = copy.deepcopy(line_data)
+            header.append("Med_CTRL")
             continue
 
         sample_id = 1
@@ -66,7 +67,6 @@ def main():
         # Calculate median, if there is no control
         med_ctrl = statistics.median(map(float, line_data[1:len(line_data)]))
         line_data.append(med_ctrl)
-        header.append("Med_CTRL")
 
         sql = "INSERT INTO sample_data(proj_id, sample_id, data_probeset_id, data_signal, data_bot_id) VALUES (%s, %s, %s, %s, %s)"
 
